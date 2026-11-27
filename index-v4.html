@@ -554,7 +554,145 @@ ${MAX_SOCIOS-socios.length}
  .writeText(texto)
  .catch(()=>{});
 }
+function generarInforme(){
 
+ const vinc =
+ socios.filter(
+  x=>x.tipo==="Vinc"
+ );
+
+ const noCamina =
+ socios.filter(
+  x=>x.tipo==="No camina"
+ );
+
+ const gosser =
+ socios.filter(
+  x=>x.tipo==="Gosser"
+ );
+
+ const ventana =
+ window.open("","_blank");
+
+ ventana.document.write(`
+
+ <html>
+
+ <head>
+
+ <title>Informe Cacera</title>
+
+ <style>
+
+ body{
+  font-family:Arial,sans-serif;
+  padding:20px;
+ }
+
+ .cards{
+  display:grid;
+  grid-template-columns:
+  repeat(6,1fr);
+  gap:10px;
+ }
+
+ .card{
+  border:1px solid #ddd;
+  border-radius:8px;
+  padding:10px;
+ }
+
+ table{
+  width:100%;
+  border-collapse:collapse;
+ }
+
+ th,td{
+  padding:8px;
+  border-bottom:1px solid #ddd;
+ }
+
+ </style>
+
+ </head>
+
+ <body>
+
+ <h1>
+ 🦌 Cacera - 29/11/2026
+ </h1>
+
+ <div class="cards">
+
+ <div class="card">
+ Confirmados<br>
+ <b>${socios.length}</b>
+ </div>
+
+ <div class="card">
+ Vacantes<br>
+ <b>${MAX_SOCIOS-socios.length}</b>
+ </div>
+
+ <div class="card">
+ Vinc<br>
+ <b>${vinc.length}</b>
+ </div>
+
+ <div class="card">
+ No camina<br>
+ <b>${noCamina.length}</b>
+ </div>
+
+ <div class="card">
+ Gosser<br>
+ <b>${gosser.length}</b>
+ </div>
+
+ <div class="card">
+ Participación<br>
+ <b>${Math.round((socios.length/MAX_SOCIOS)*100)}%</b>
+ </div>
+
+ </div>
+
+ <br>
+
+ <table>
+
+ <tr>
+ <th>#</th>
+ <th>Nombre</th>
+ <th>Tipo</th>
+ </tr>
+
+ ${socios.map((s,i)=>`
+
+ <tr>
+
+ <td>${i+1}</td>
+
+ <td>${s.nombre}</td>
+
+ <td>${s.tipo}</td>
+
+ </tr>
+
+ `).join("")}
+
+ </table>
+
+ </body>
+
+ </html>
+
+ `);
+
+ ventana.document.close();
+
+ ventana.print();
+
+}
 if(
  "serviceWorker"
  in navigator
