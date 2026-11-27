@@ -685,7 +685,21 @@ function generarInforme(){
  `).join("")}
 
  </table>
+<br><br>
 
+<button
+onclick="window.print()"
+style="
+background:#2f6f3e;
+color:white;
+border:none;
+padding:12px;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+">
+🖨️ Imprimir PDF
+</button>
  </body>
 
  </html>
@@ -694,7 +708,6 @@ function generarInforme(){
 
  ventana.document.close();
 
- ventana.print();
 
 }
 if(
