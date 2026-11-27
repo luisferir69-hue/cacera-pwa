@@ -1,0 +1,10 @@
+{
+  "name": "Cacera PWA",
+  "short_name": "Cacera",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#387447",
+  "orientation": "portrait",
+  "icons": []
+}
