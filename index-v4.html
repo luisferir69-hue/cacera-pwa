@@ -259,13 +259,34 @@ function guardar(){
 }
 
 function render(){
+const textoBusqueda =
+(document.getElementById("buscar")?.value || "")
+.toLowerCase();
 
+const filtro =
+(document.getElementById("filtro")?.value || "Todos");
  const tabla =
  document.getElementById("tabla");
 
  tabla.innerHTML="";
 
  socios.forEach((socio,index)=>{
+
+ if(
+  textoBusqueda &&
+  !socio.nombre
+   .toLowerCase()
+   .includes(textoBusqueda)
+ ){
+  return;
+ }
+
+ if(
+  filtro !== "Todos" &&
+  socio.tipo !== filtro
+ ){
+  return;
+ }
 
  let color="#2f6f3e";
 
