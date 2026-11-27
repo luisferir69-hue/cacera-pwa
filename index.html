@@ -208,3 +208,345 @@ Resumen WhatsApp
 <textarea id="salida"></textarea>
 
 </div>
+<script>
+
+const MAX_SOCIOS = 60;
+
+const sociosIniciales = [
+
+{nombre:"Josep Maria Company",tipo:"Vinc"},
+{nombre:"Enric Ranera",tipo:"Vinc"},
+{nombre:"Poli",tipo:"Vinc"},
+{nombre:"Cristian González",tipo:"Vinc"},
+{nombre:"Jordi Mascort",tipo:"Vinc"},
+{nombre:"Juan",tipo:"Vinc"},
+{nombre:"Toni",tipo:"Vinc"},
+{nombre:"Nico Molina",tipo:"Vinc"},
+{nombre:"Felix Costa",tipo:"Vinc"},
+{nombre:"Chavdar",tipo:"Vinc"},
+{nombre:"Luis Cistella",tipo:"Vinc"},
+{nombre:"Juan Antonio González",tipo:"Vinc"},
+{nombre:"Vilaritg",tipo:"Vinc"},
+{nombre:"Angel C. Cist.",tipo:"Vinc"},
+{nombre:"Tú",tipo:"Vinc"},
+
+{nombre:"Joan Parramon",tipo:"No camina"},
+{nombre:"Carles Alegrí",tipo:"No camina"},
+{nombre:"Josepmaria Dausa",tipo:"No camina"},
+{nombre:"Pere Gauses",tipo:"No camina"},
+{nombre:"Enric",tipo:"No camina"},
+
+{nombre:"Albert Llosaire",tipo:"Gosser"},
+{nombre:"Isi Perrero",tipo:"Gosser"},
+{nombre:"Marc Perreo",tipo:"Gosser"},
+{nombre:"Ariadna Garcia",tipo:"Gosser"},
+{nombre:"Alberto",tipo:"Gosser"}
+
+];
+
+let socios =
+JSON.parse(
+localStorage.getItem("cacera-v3")
+) || sociosIniciales;
+
+function guardar(){
+
+ localStorage.setItem(
+  "cacera-v3",
+  JSON.stringify(socios)
+ );
+
+}
+
+function render(){
+
+ const tabla =
+ document.getElementById("tabla");
+
+ tabla.innerHTML="";
+
+ socios.forEach((socio,index)=>{
+
+ let color="#2f6f3e";
+
+ if(socio.tipo==="No camina"){
+  color="#cc7a00";
+ }
+
+ if(socio.tipo==="Gosser"){
+  color="#2962a8";
+ }
+
+ tabla.innerHTML += `
+ <tr>
+
+ <td>${index+1}</td>
+
+ <td>${socio.nombre}</td>
+
+ <td>
+  <span style="
+  color:${color};
+  font-weight:bold;">
+  ${socio.tipo}
+  </span>
+ </td>
+
+ <td>
+
+ <button
+ class="btnEdit"
+ onclick="editar(${index})">
+ ✏️
+ </button>
+
+ <button
+ class="btnDelete"
+ onclick="eliminar(${index})">
+ 🗑️
+ </button>
+
+ </td>
+
+ </tr>
+ `;
+
+ });
+
+ actualizarStats();
+
+ guardar();
+}
+
+function actualizarStats(){
+
+ const vinc =
+ socios.filter(
+ s=>s.tipo==="Vinc"
+ ).length;
+
+ const noCamina =
+ socios.filter(
+ s=>s.tipo==="No camina"
+ ).length;
+
+ const gosser =
+ socios.filter(
+ s=>s.tipo==="Gosser"
+ ).length;
+
+ document.getElementById(
+ "totalSocios"
+ ).textContent =
+ socios.length;
+
+ document.getElementById(
+ "totalVinc"
+ ).textContent =
+ vinc;
+
+ document.getElementById(
+ "totalNoCamina"
+ ).textContent =
+ noCamina;
+
+ document.getElementById(
+ "totalGosser"
+ ).textContent =
+ gosser;
+
+ document.getElementById(
+ "vacantes"
+ ).textContent =
+ MAX_SOCIOS - socios.length;
+
+}
+
+function agregarSocio(){
+
+ const nombre =
+ document.getElementById(
+ "nombre"
+ ).value.trim();
+
+ const tipo =
+ document.getElementById(
+ "tipo"
+ ).value;
+
+ if(!nombre){
+
+  alert(
+  "Introduce un nombre"
+  );
+
+  return;
+ }
+
+ if(
+ socios.length>=MAX_SOCIOS
+ ){
+
+  alert(
+  "Máximo 60 socios"
+  );
+
+  return;
+ }
+
+ socios.push({
+
+  nombre:nombre,
+  tipo:tipo
+
+ });
+
+ document.getElementById(
+ "nombre"
+ ).value="";
+
+ render();
+}
+
+function eliminar(id){
+
+ if(
+ !confirm(
+ "¿Eliminar socio?"
+ )
+ ){
+  return;
+ }
+
+ socios.splice(id,1);
+
+ render();
+}
+
+function editar(id){
+
+ const nuevoNombre =
+ prompt(
+ "Nombre:",
+ socios[id].nombre
+ );
+
+ if(
+ nuevoNombre===null
+ ){
+  return;
+ }
+
+ const nuevoTipo =
+ prompt(
+ "Tipo (Vinc, No camina o Gosser):",
+ socios[id].tipo
+ );
+
+ if(
+ nuevoTipo===null
+ ){
+  return;
+ }
+
+ socios[id].nombre =
+ nuevoNombre;
+
+ socios[id].tipo =
+ nuevoTipo;
+
+ render();
+}
+
+function exportarCSV(){
+
+ let csv =
+ "Numero;Nombre;Tipo\n";
+
+ socios.forEach((s,i)=>{
+
+ csv +=
+ `${i+1};${s.nombre};${s.tipo}\n`;
+
+ });
+
+ const blob =
+ new Blob(
+ [csv],
+ {type:"text/csv"}
+ );
+
+ const url =
+ URL.createObjectURL(
+ blob
+ );
+
+ const a =
+ document.createElement("a");
+
+ a.href=url;
+
+ a.download=
+ "cacera.csv";
+
+ a.click();
+}
+
+function crearWhatsApp(){
+
+ const vinc =
+ socios.filter(
+ s=>s.tipo==="Vinc"
+ ).length;
+
+ const noCamina =
+ socios.filter(
+ s=>s.tipo==="No camina"
+ ).length;
+
+ const gosser =
+ socios.filter(
+ s=>s.tipo==="Gosser"
+ ).length;
+
+ const texto =
+
+`🦌 CACERA
+
+🟢 Vinc: ${vinc}
+🟠 No camina: ${noCamina}
+🔵 Gosser: ${gosser}
+
+👥 Confirmados:
+${socios.length}
+
+⏳ Vacantes:
+${MAX_SOCIOS-socios.length}
+`;
+
+ document.getElementById(
+ "salida"
+ ).value =
+ texto;
+
+ navigator.clipboard
+ .writeText(texto)
+ .catch(()=>{});
+}
+
+if(
+ "serviceWorker"
+ in navigator
+){
+
+ navigator.serviceWorker
+ .register("./sw.js");
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
